@@ -10,6 +10,8 @@ _Từ Oracle SQL & PL/SQL → Nền tảng Dữ liệu Doanh nghiệp → Hạ t
 [![Stages](https://img.shields.io/badge/Stages-8-green)](docs/)
 [![Labs](https://img.shields.io/badge/Labs-8-orange)](labs/)
 [![Diagrams](https://img.shields.io/badge/Diagrams-6-purple)](diagrams/)
+[![SQL Developer](https://img.shields.io/badge/Tool-SQL_Developer-darkblue)](https://www.oracle.com/database/sqldeveloper/)
+[![Oracle XE](https://img.shields.io/badge/Oracle-XE_21c-red)](https://www.oracle.com/database/technologies/xe-downloads.html)
 
 > A production-grade Oracle engineering roadmap designed for:
 > _Một lộ trình kỹ sư Oracle cấp độ thực tế (production) được thiết kế dành cho:_
