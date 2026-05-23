@@ -5,7 +5,7 @@
 _Từ Oracle SQL & PL/SQL → Nền tảng Dữ liệu Doanh nghiệp → Hạ tầng Cơ sở dữ liệu Trọng yếu_
 [![CI](https://github.com/duongbaophuoc/oracle-sql-for-me/actions/workflows/ci.yml/badge.svg)](https://github.com/duongbaophuoc/oracle-sql-for-me/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
-[![Oracle](https://img.shields.io/badge/Oracle-Database-red?logo=oracle&logoColor=white)](https://docs.oracle.com/en/database/)
+[![Oracle](https://img.shields.io/badge/Oracle-Database-red?logo=oracle&logoColor=white)](https://www.oracle.com/database/)
 [![PL/SQL](https://img.shields.io/badge/PL%2FSQL-Programming-blue)](https://docs.oracle.com/en/database/oracle/oracle-database/)
 [![Stages](https://img.shields.io/badge/Stages-8-green)](docs/)
 [![Labs](https://img.shields.io/badge/Labs-8-orange)](labs/)
