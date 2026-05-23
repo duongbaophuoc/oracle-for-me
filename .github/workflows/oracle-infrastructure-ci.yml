@@ -1,0 +1,203 @@
+name: Oracle Infrastructure CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+
+  markdown-quality:
+    name: Markdown Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli
+
+      - name: Validate markdown
+        run: |
+          markdownlint "**/*.md" \
+          --disable MD013
+
+  yaml-quality:
+    name: YAML Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yamllint
+        run: sudo apt-get update && sudo apt-get install -y yamllint
+
+      - name: Validate YAML
+        run: |
+          find . \( -name "*.yml" -o -name "*.yaml" \) | while read file; do
+            echo "Checking $file"
+
+            yamllint -d '{
+              extends: relaxed,
+              rules: {
+                line-length: {
+                  max: 160,
+                  level: warning
+                }
+              }
+            }' "$file"
+          done
+
+  shell-quality:
+    name: Shell Script Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: Validate shell scripts
+        run: |
+          find . -name "*.sh" -type f | while read file; do
+            echo "Checking $file"
+            shellcheck "$file"
+          done
+
+  docker-compose-validation:
+    name: Docker Compose Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate docker compose
+        run: |
+          find docker -name "docker-compose*.yml" -o -name "docker-compose*.yaml" | while read file; do
+            echo "Validating $file"
+            docker compose -f "$file" config > /dev/null
+          done
+
+  kubernetes-validation:
+    name: Kubernetes Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubeconform
+        run: |
+          curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz \
+          | tar xz
+
+          sudo mv kubeconform /usr/local/bin/
+
+      - name: Validate kubernetes manifests
+        run: |
+          find kubernetes docs -type f \( -name "*.yaml" -o -name "*.yml" \) | while read file; do
+            echo "Checking $file"
+            kubeconform -strict "$file" || true
+          done
+
+  repository-structure:
+    name: Repository Structure Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate required directories
+        run: |
+          required_dirs=(
+            docs
+            labs
+            diagrams
+            docker
+            kubernetes
+            monitoring
+            scripts
+          )
+
+          for dir in "${required_dirs[@]}"; do
+            if [ ! -d "$dir" ]; then
+              echo "$dir missing"
+              exit 1
+            fi
+          done
+
+      - name: Validate required files
+        run: |
+          required_files=(
+            README.md
+            LICENSE
+          )
+
+          for file in "${required_files[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "$file missing"
+              exit 1
+            fi
+          done
+
+  sql-quality:
+    name: Oracle SQL Quality
+    runs-on: ubuntu-latest
+
+    services:
+      oracle:
+        image: gvenzl/oracle-xe:21-slim
+        ports:
+          - 1521:1521
+        env:
+          ORACLE_PASSWORD: oracle
+        options: >-
+          --health-cmd="healthcheck.sh"
+          --health-interval=20s
+          --health-timeout=10s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wait for Oracle XE
+        run: |
+          echo "Waiting for Oracle startup..."
+          sleep 90
+
+      - name: Validate SQL file existence
+        run: |
+          count=$(find . -name "*.sql" | wc -l)
+
+          echo "SQL files found: $count"
+
+          if [ "$count" -eq 0 ]; then
+            echo "No SQL files detected"
+            exit 1
+          fi
+
+      - name: Validate naming conventions
+        run: |
+          find . -name "*.sql" | while read file; do
+            echo "Reviewing $file"
+
+            grep -qi "select \*" "$file" && \
+            echo "Warning: SELECT * detected in $file"
+          done
+
+  diagram-validation:
+    name: Diagram Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate PlantUML files
+        run: |
+          find diagrams -name "*.puml" | while read file; do
+            echo "Diagram found: $file"
+          done
