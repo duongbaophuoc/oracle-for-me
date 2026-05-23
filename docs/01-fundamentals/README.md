@@ -53,6 +53,25 @@ If you process millions of rows row-by-row (Cursor FOR Loop), performance will c
 - **Pipelined Functions:** Stream data directly to the consumer without waiting for the entire result set to be generated.
   *(Truyền dữ liệu dạng luồng trực tiếp đến nơi tiêu thụ mà không cần đợi toàn bộ tập kết quả được tạo ra.)*
 
+### Dynamic SQL & Security (Dynamic SQL & Bảo mật)
+Dynamic SQL (`EXECUTE IMMEDIATE`) is highly powerful for building runtime queries, but introduces severe **SQL Injection** vulnerabilities if concatenated improperly.
+*Dynamic SQL cực kỳ mạnh mẽ để dựng truy vấn tại thời gian chạy, nhưng có nguy cơ gây lỗi bảo mật SQL Injection nghiêm trọng nếu ghép chuỗi không an toàn.*
+
+- **Mitigation 1: Bind Variables (Biến Liên kết):** Always use the `USING` clause instead of string concatenation. This ensures Oracle treats variables strictly as values and reuses execution plans.
+  *(Sử dụng mệnh đề `USING` thay vì ghép chuỗi. Điều này giúp Oracle đối xử với biến thuần túy là dữ liệu và tái sử dụng kế hoạch thực thi).*
+  ```sql
+  -- SECURE (AN TOÀN): Using Bind Variables
+  EXECUTE IMMEDIATE 'UPDATE accounts SET balance = :1 WHERE account_id = :2' USING v_amount, v_acc_id;
+  ```
+- **Mitigation 2: DBMS_ASSERT Package (Gói DBMS_ASSERT):** If database identifiers (like table or column names) must be dynamic and cannot be bound, validate them strictly using `DBMS_ASSERT` functions (e.g., `SIMPLE_SQL_NAME`, `SQL_OBJECT_NAME`, `ENQUOTE_LITERAL`).
+  *(Nếu bắt buộc phải truyền động tên bảng/cột (không dùng bind variable được), hãy dùng gói `DBMS_ASSERT` để chuẩn hóa và lọc sạch định danh đầu vào trước khi thực thi).*
+  ```sql
+  -- SECURE (AN TOÀN): Validating dynamic table name to prevent injection
+  v_safe_table := DBMS_ASSERT.SQL_OBJECT_NAME(p_table_name);
+  EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || v_safe_table INTO v_count;
+  ```
+
+
 ---
 
 ## 📝 Practice Plan (Kế hoạch Thực hành)
