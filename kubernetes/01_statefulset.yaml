@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: oracle-db
+  labels:
+    app: oracle-db
+spec:
+  serviceName: "oracle-db-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle-db
+  template:
+    metadata:
+      labels:
+        app: oracle-db
+    spec:
+      containers:
+      - name: oracle-db
+        image: container-registry.oracle.com/database/free:latest # Oracle 23c Free Edition
+        ports:
+        - containerPort: 1521
+        - containerPort: 5500
+        env:
+        - name: ORACLE_PWD
+          valueFrom:
+            secretKeyRef:
+              name: oracle-secret
+              key: password
+        volumeMounts:
+        - name: oracle-data
+          mountPath: /opt/oracle/oradata
+  volumeClaimTemplates:
+  - metadata:
+      name: oracle-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: manual
+      resources:
+        requests:
+          storage: 50Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle-db-service
+spec:
+  ports:
+  - name: sqlnet
+    port: 1521
+    targetPort: 1521
+  selector:
+    app: oracle-db
+  type: ClusterIP

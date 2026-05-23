@@ -1,0 +1,111 @@
+# ==============================================================================
+# Stage 8: Ecosystem - Oracle on Kubernetes (StatefulSet)
+# Giai đoạn 8: Hệ sinh thái - Oracle trên Kubernetes (K8s)
+# ==============================================================================
+
+# While massive monolithic databases belong on Exadata, microservices 
+# often require lightweight, containerized Oracle databases.
+# (Mặc dù các CSDL khổng lồ thuộc về Exadata, kiến trúc microservices 
+# thường yêu cầu các CSDL Oracle nhỏ gọn chạy trong container).
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: oracle-db
+  labels:
+    app: oracle-db
+spec:
+  serviceName: "oracle-db-service"
+  replicas: 1 # Standard single instance
+  selector:
+    matchLabels:
+      app: oracle-db
+  template:
+    metadata:
+      labels:
+        app: oracle-db
+    spec:
+      containers:
+      - name: oracle-db
+        image: container-registry.oracle.com/database/free:latest # Oracle 23c Free Edition
+        ports:
+        - containerPort: 1521 # SQL*Plus / JDBC Listener
+        - containerPort: 5500 # Enterprise Manager Express
+        
+        # Resource Limits & Requests: Critical to prevent OOM Kills
+        # (Giới hạn tài nguyên để tránh tiến trình bị kill do thiếu RAM/CPU)
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "2"
+          limits:
+            memory: "8Gi"
+            cpu: "4"
+            
+        env:
+        - name: ORACLE_PWD
+          valueFrom:
+            secretKeyRef:
+              name: oracle-secret
+              key: password
+              
+        # Liveness & Readiness Probes using native sqlplus ping
+        # (Kiểm tra trạng thái hoạt động của DB thông qua câu lệnh truy vấn)
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "export ORACLE_HOME=/opt/oracle/product/23c/dbhomeFree && $ORACLE_HOME/bin/sqlplus -L -S / as sysdba <<EOF\nSELECT 1 FROM dual;\nexit;\nEOF"
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 10
+          
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "export ORACLE_HOME=/opt/oracle/product/23c/dbhomeFree && $ORACLE_HOME/bin/tnsping localhost"
+          initialDelaySeconds: 90
+          periodSeconds: 20
+          timeoutSeconds: 10
+
+        # Graceful Shutdown on Pod Terminate: Shut down immediate before SIGKILL
+        # (Tắt CSDL an toàn trước khi Pod bị Kubernetes dừng đột ngột)
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - "export ORACLE_HOME=/opt/oracle/product/23c/dbhomeFree && $ORACLE_HOME/bin/sqlplus -L -S / as sysdba <<EOF\nSHUTDOWN IMMEDIATE;\nexit;\nEOF"
+              
+        volumeMounts:
+        - name: oracle-data
+          mountPath: /opt/oracle/oradata # Persistent Data files (File dữ liệu lưu trữ)
+  
+  # VolumeClaimTemplates ensure that if the Pod dies and restarts, 
+  # it attaches to the EXACT same persistent volume.
+  volumeClaimTemplates:
+  - metadata:
+      name: oracle-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 50Gi
+---
+# Service to expose the database to other Microservices
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle-db-service
+spec:
+  ports:
+  - name: sqlnet
+    port: 1521
+    targetPort: 1521
+  selector:
+    app: oracle-db
+  type: ClusterIP

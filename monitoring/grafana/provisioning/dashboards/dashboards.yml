@@ -1,0 +1,12 @@
+apiVersion: 1
+
+providers:
+  - name: 'Oracle Databases'
+    orgId: 1
+    folder: 'Oracle Infrastructure'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards

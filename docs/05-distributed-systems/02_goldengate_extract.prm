@@ -1,0 +1,10 @@
+EXTRACT ext_fin
+USERIDALIAS ogg_admin DOMAIN OracleGoldenGate
+EXTTRAIL ./dirdat/ex
+
+-- Capture specific tables
+TABLE ENTERPRISE_CORE_DB.ACCOUNTS;
+TABLE ENTERPRISE_CORE_DB.TRANSACTIONS;
+
+-- Ignore heartbeats
+GETUPDATEBEFORES

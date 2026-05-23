@@ -1,0 +1,36 @@
+@startuml
+!theme plain
+title RAC Transparent Application Failover (TAF) Sequence
+' Biểu đồ trình tự: Quá trình chuyển lỗi trong suốt của RAC
+
+actor "Client App (JDBC)" as client
+box "Oracle RAC Cluster" #LightCyan
+participant "Node 1\n(srv_oltp)" as node1
+participant "Node 2\n(srv_oltp_backup)" as node2
+participant "Oracle Clusterware" as crs
+end box
+
+client -> node1 : Connect (SERVICE=srv_oltp)
+activate node1
+node1 --> client : Connection Established
+
+client -> node1 : UPDATE accounts SET balance = ...
+node1 --> client : Success
+
+client -> node1 : SELECT * FROM large_report
+note right of node1 : In-flight Query\n(Đang chạy truy vấn)
+
+== Sự cố Máy chủ (Server Crash) ==
+destroy node1
+crs -> crs : Detects Node 1 Failure\n(Phát hiện Node 1 sập)
+crs -> node2 : Start srv_oltp on Node 2\n(Mở dịch vụ trên Node 2)
+crs -> client : FAN Event: Node 1 is DEAD\n(Gửi cảnh báo đến Client)
+
+== Transparent Failover (TAF) ==
+client -> node2 : TAF: Automatically Reconnect to Node 2
+activate node2
+node2 --> client : Connection Established
+note right of node2 : TAF (TYPE=SELECT) resumes the\nin-flight query from where it left off\n(Tiếp tục chạy câu lệnh SELECT đang dở)
+node2 --> client : Return remaining SELECT rows
+
+@enduml

@@ -1,0 +1,37 @@
+@startuml
+!theme plain
+title Data Guard - Maximum Availability Architecture
+' Kiến trúc Sẵn sàng Tối đa của Data Guard
+
+node "Trung tâm Dữ liệu Chính (Primary DC)" {
+    database "Cơ sở dữ liệu Chính\n(Primary Database)" as primary
+    file "Redo Log Buffer" as redobuf_p
+    file "Online Redo Logs" as onlineredo_p
+}
+
+node "Trung tâm Dữ liệu Dự phòng (Standby DC)" {
+    database "CSDL Dự phòng Vật lý\n(Physical Standby)" as standby
+    file "Standby Redo Logs" as standbyredo_s
+    file "Archive Logs" as archive_s
+}
+
+actor "Ứng dụng Doanh nghiệp" as app
+
+app -> primary : 1. COMMIT Giao dịch
+primary -> redobuf_p : 2. Ghi vào Bộ đệm
+
+' Sync replication
+redobuf_p -[#red,bold]-> standbyredo_s : 3. Oracle Net (Đồng bộ SYNC)
+redobuf_p --> onlineredo_p : 4. Ghi xuống đĩa cục bộ
+
+standbyredo_s --> standby : 5. Tiến trình MRP0 nạp dữ liệu (Apply)
+standbyredo_s --> archive_s : 6. Lưu trữ lâu dài
+
+note right of app
+  Trong chế độ Max Availability, CSDL Chính 
+  sẽ đợi (wait) cho đến khi Standby xác nhận
+  đã nhận được Redo ở bước 3, trước khi
+  trả về kết quả "Thành công" cho Ứng dụng.
+end note
+
+@enduml

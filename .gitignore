@@ -1,0 +1,57 @@
+# IDEs & Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Oracle Database & Temp Files
+*.dmp
+*.log
+*.trc
+*.trm
+*.arc
+*.dbf
+*.ctl
+*.ora
+*.aud
+network/admin/sqlnet.ora
+network/admin/tnsnames.ora
+
+# Secrets & Credentials
+.env
+.env.local
+secrets.yml
+wallet/
+ewallet.p12
+cwallet.sso
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+env/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan
+

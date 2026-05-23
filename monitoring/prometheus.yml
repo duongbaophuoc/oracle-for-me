@@ -1,0 +1,17 @@
+global:
+  # Slowed down from 5s to 15s to prevent excessive parsing load on Oracle's Shared Pool (V$ views)
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "oracle-exporter"
+    static_configs:
+      - targets: ["oracledb-exporter:9161"]
+    metrics_path: /metrics
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: "oracle-production"
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]

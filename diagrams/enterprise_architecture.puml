@@ -1,0 +1,50 @@
+@startuml
+!theme plain
+title Tích hợp Doanh nghiệp Oracle (Oracle Enterprise Integration)
+
+actor "Người dùng" as user
+node "Cân bằng tải (Load Balancer)" as lb
+
+package "Cụm Ứng dụng (Microservices)" {
+    component "Dịch vụ Giao dịch (OLTP)" as svc_oltp
+    component "Dịch vụ Báo cáo (Reporting)" as svc_report
+}
+
+package "Trung tâm Dữ liệu Chính (Primary DC)" {
+    database "Oracle RAC (Cụm Máy chủ)" as rac {
+        [Node 1 (OLTP)] as node1
+        [Node 2 (Report)] as node2
+    }
+    storage "Lưu trữ dùng chung (ASM)" as asm
+}
+
+package "Trung tâm Dự phòng (Disaster Recovery)" {
+    database "Active Data Guard (Standby)" as adg {
+        [Node 3 (Dự phòng)] as node3
+    }
+}
+
+queue "Apache Kafka" as kafka
+
+user -> lb
+lb --> svc_oltp
+lb --> svc_report
+
+svc_oltp --> node1 : Read/Write (JDBC)
+svc_report --> node2 : Cân bằng tải Đọc
+
+node1 --> asm
+node2 --> asm
+
+' Data Guard Replication
+node1 ..> node3 : Gửi Redo Log (Đồng bộ)
+
+' CDC Integration
+node1 -right-> kafka : Oracle GoldenGate (CDC)
+
+note bottom of adg
+  Mở chế độ CHỈ ĐỌC
+  nhờ Active Data Guard
+end note
+
+@enduml
