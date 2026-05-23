@@ -3,6 +3,13 @@
 ### From Oracle SQL & PL/SQL → Enterprise Data Platforms → Mission-Critical Database Infrastructure
 
 _Từ Oracle SQL & PL/SQL → Nền tảng Dữ liệu Doanh nghiệp → Hạ tầng Cơ sở dữ liệu Trọng yếu_
+[![CI](https://github.com/duongbaophuoc/oracle-sql-for-me/actions/workflows/ci.yml/badge.svg)](https://github.com/duongbaophuoc/oracle-sql-for-me/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+[![Oracle](https://img.shields.io/badge/Oracle-Database-red?logo=oracle&logoColor=white)](https://docs.oracle.com/en/database/)
+[![PL/SQL](https://img.shields.io/badge/PL%2FSQL-Programming-blue)](https://docs.oracle.com/en/database/oracle/oracle-database/)
+[![Stages](https://img.shields.io/badge/Stages-8-green)](docs/)
+[![Labs](https://img.shields.io/badge/Labs-8-orange)](labs/)
+[![Diagrams](https://img.shields.io/badge/Diagrams-6-purple)](diagrams/)
 
 > A production-grade Oracle engineering roadmap designed for:
 > _Một lộ trình kỹ sư Oracle cấp độ thực tế (production) được thiết kế dành cho:_
