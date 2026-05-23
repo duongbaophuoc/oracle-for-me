@@ -711,16 +711,26 @@ sqlplus system@localhost:1521/XEPDB1
 By the end of this roadmap, you should be able to:
 _Đến khi hoàn thành lộ trình này, bạn sẽ có khả năng:_
 
-✅ Understand Oracle internals deeply (Hiểu sâu sắc các cấu trúc nội bộ của Oracle)
-✅ Diagnose enterprise bottlenecks professionally (Chẩn đoán các điểm nghẽn của doanh nghiệp một cách chuyên nghiệp)
-✅ Build mission-critical Oracle infrastructures (Xây dựng các hạ tầng CSDL Oracle trọng yếu)
-✅ Operate RAC & Data Guard systems (Vận hành hệ thống Oracle RAC & Data Guard)
-✅ Design distributed Oracle architectures (Thiết kế kiến trúc hệ thống Oracle phân tán)
-✅ Build enterprise warehouse & analytics platforms (Xây dựng các nền tảng phân tích và kho dữ liệu doanh nghiệp)
-✅ Implement enterprise HA & disaster recovery (Triển khai hệ thống khôi phục sau thảm họa & HA cho doanh nghiệp)
-✅ Monitor and troubleshoot infrastructure incidents (Giám sát và khắc phục sự cố hạ tầng)
-✅ Operate Oracle under mission-critical workloads (Vận hành Oracle dưới những tải công việc quan trọng)
-✅ Work professionally as an Oracle Infrastructure Engineer / Enterprise Database Engineer (Làm việc chuyên nghiệp với tư cách là một Kỹ sư Hạ tầng Oracle / Kỹ sư CSDL Doanh nghiệp)
+✅ Understand Oracle internals deeply 
+(Hiểu sâu sắc các cấu trúc nội bộ của Oracle)
+✅ Diagnose enterprise bottlenecks professionally 
+(Chẩn đoán các điểm nghẽn của doanh nghiệp một cách chuyên nghiệp)
+✅ Build mission-critical Oracle infrastructures 
+(Xây dựng các hạ tầng CSDL Oracle trọng yếu)
+✅ Operate RAC & Data Guard systems 
+(Vận hành hệ thống Oracle RAC & Data Guard)
+✅ Design distributed Oracle architectures 
+(Thiết kế kiến trúc hệ thống Oracle phân tán)
+✅ Build enterprise warehouse & analytics platforms 
+(Xây dựng các nền tảng phân tích và kho dữ liệu doanh nghiệp)
+✅ Implement enterprise HA & disaster recovery 
+(Triển khai hệ thống khôi phục sau thảm họa & HA cho doanh nghiệp)
+✅ Monitor and troubleshoot infrastructure incidents 
+(Giám sát và khắc phục sự cố hạ tầng)
+✅ Operate Oracle under mission-critical workloads 
+(Vận hành Oracle dưới những tải công việc quan trọng)
+✅ Work professionally as an Oracle Infrastructure Engineer / Enterprise Database Engineer 
+(Làm việc chuyên nghiệp với tư cách là một Kỹ sư Hạ tầng Oracle / Kỹ sư CSDL Doanh nghiệp)
 By the end of this roadmap, you should be able to:
 _Đến khi hoàn thành lộ trình này, bạn sẽ có khả năng:_
 
