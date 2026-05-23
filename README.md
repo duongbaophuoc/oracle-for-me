@@ -3,7 +3,7 @@
 ### From Oracle SQL & PL/SQL → Enterprise Data Platforms → Mission-Critical Database Infrastructure
 
 _Từ Oracle SQL & PL/SQL → Nền tảng Dữ liệu Doanh nghiệp → Hạ tầng Cơ sở dữ liệu Trọng yếu_
-[![CI](https://github.com/duongbaophuoc/oracle-for-me/actions/workflows/validate.yml/badge.svg)](https://github.com/duongbaophuoc/oracle-for-me/actions/workflows/validate.yml)
+[![Oracle Infrastructure CI](https://github.com/duongbaophuoc/oracle-for-me/actions/workflows/oracle-infrastructure-ci.yml/badge.svg)](https://github.com/duongbaophuoc/oracle-for-me/actions/workflows/oracle-infrastructure-ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 [![Oracle](https://img.shields.io/badge/Oracle-Database-red?logo=oracle&logoColor=white)](https://www.oracle.com/database/)
 [![PL/SQL](https://img.shields.io/badge/PL%2FSQL-Programming-blue)](https://docs.oracle.com/en/database/oracle/oracle-database/)
